@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="">
+<head>
+    <meta charset="UTF-8">
+    <title>Профиль</title>
+</head>
+<body>
+    <h2>Привет, <span th:text="${user.firstName} + ' ' + ${user.lastName()}"></span>!</h2>
+    <p>Username: <span th:text="${user.userName}"></span></p>
+    <p>Photo:</p>
+        <img th:src="${user.photoUrl}" alt="avatar" style="max-width: 150px"/>
+    <br/>
+    <a th:href="@{/login}">Назад</a>
+</body>
+</html>

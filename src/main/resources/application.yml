@@ -1,0 +1,7 @@
+server:
+    port: 8080
+
+telegram:
+    bot:
+        token: 8128766132:AAGLy_vwvvFpT0KR9EKdr5WKn1sj9YFBeWs
+        username: TestAuthorizationBot
