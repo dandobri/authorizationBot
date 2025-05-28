@@ -1,15 +1,19 @@
 package daniil.dobris.authorizationbot.service;
 
-import daniil.dobris.authorizationbot.model.TelegramUser;
+import daniil.dobris.authorizationbot.dto.TelegramUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.time.Instant;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -17,6 +21,27 @@ import java.util.stream.Collectors;
 public class TelegramAuthService {
     @Value("${telegram.bot.token}")
     private String botToken;
+
+    public Optional<TelegramUser> validateAndExtractUser(String initData) {
+        Map<String, String> data = parseInitData(initData);
+
+        if (!isDataValid(data)) {
+            return Optional.empty();
+        }
+
+        return Optional.of(mapToTelegramUser(data));
+    }
+
+    private Map<String, String> parseInitData(String initData) {
+        Map<String, String> result = new HashMap<>();
+        for (String pair : initData.split("&")) {
+            String[] kv = pair.split("=", 2);
+            if (kv.length == 2) {
+                result.put(kv[0], URLDecoder.decode(kv[1], StandardCharsets.UTF_8));
+            }
+        }
+        return result;
+    }
 
     public boolean isDataValid(Map<String, String> data) {
         String hash = data.get("hash");

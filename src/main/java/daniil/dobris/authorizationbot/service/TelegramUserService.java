@@ -1,9 +1,8 @@
 package daniil.dobris.authorizationbot.service;
 
 import daniil.dobris.authorizationbot.entity.TelegramUserEntity;
-import daniil.dobris.authorizationbot.model.TelegramUser;
+import daniil.dobris.authorizationbot.dto.TelegramUser;
 import daniil.dobris.authorizationbot.repository.TelegramUserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
