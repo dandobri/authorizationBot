@@ -1,11 +1,18 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Доступ запрещён</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-<h1>Ошибка 403 — доступ запрещён</h1>
-<p>Вы не авторизованы. Пожалуйста, <a th:href="@{/login}">войдите через Telegram</a>.</p>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="bg-white shadow-md rounded-2xl p-10 text-center max-w-md">
+        <h1 class="text-3xl font-bold text-red-600 mb-4">Ошибка 403</h1>
+        <p class="text-gray-700 text-lg mb-6">Вы не авторизованы для просмотра этой страницы.</p>
+        <a href="/login"
+           class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-xl transition">
+            Войти через Telegram
+        </a>
+    </div>
 </body>
 </html>
