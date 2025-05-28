@@ -5,3 +5,13 @@ telegram:
     bot:
         token: 8128766132:AAGLy_vwvvFpT0KR9EKdr5WKn1sj9YFBeWs
         username: TestAuthorizationBot
+
+spring:
+    datasource:
+      url: jdbc:postgresql://localhost:5432/telegram_auth
+      username: user
+      password: pass
+    jpa:
+        hibernate:
+          ddl-auto: update
+        show-sql: true
