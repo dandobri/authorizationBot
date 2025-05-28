@@ -16,6 +16,7 @@ public class TelegramUserService {
 
     public void saveOrUpdate(TelegramUser telegramUser) {
         TelegramUserEntity entity = new TelegramUserEntity();
+        entity.setId(telegramUser.id());
         entity.setFirstName(telegramUser.firstName());
         entity.setLastName(telegramUser.lastName());
         entity.setUsername(telegramUser.userName());

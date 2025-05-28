@@ -10,7 +10,6 @@ import javax.crypto.spec.SecretKeySpec;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
-import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -72,10 +71,11 @@ public class TelegramAuthService {
     }
 
     public TelegramUser mapToTelegramUser(Map<String, String> data) {
+        Long id = Long.parseLong(data.get("id"));
         String firstName = data.getOrDefault("first_name", "");
         String lastName = data.getOrDefault("last_name", "");
         String userName = data.getOrDefault("username", "");
         String photoUrl = data.getOrDefault("photo_url", "");
-        return new TelegramUser(firstName, lastName, userName, photoUrl);
+        return new TelegramUser(id, firstName, lastName, userName, photoUrl);
     }
 }

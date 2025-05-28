@@ -17,10 +17,10 @@ import java.util.Date;
 public class JwtUtil {
     private SecretKey key;
     private final long expirationMs = 1000 * 60 * 60;
+    private final String keyString = "f6de82ede2a0197534deea7ac953f91b24b56e95c75c2680bf0fe99de94513a3";
 
     @PostConstruct
     public void init() {
-        String keyString = "f6de82ede2a0197534deea7ac953f91b24b56e95c75c2680bf0fe99de94513a3";
         this.key = Keys.hmacShaKeyFor(keyString.getBytes(StandardCharsets.UTF_8));
     }
 
