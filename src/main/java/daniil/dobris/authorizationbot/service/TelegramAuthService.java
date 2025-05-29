@@ -7,10 +7,8 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,17 +19,15 @@ public class TelegramAuthService {
     @Value("${telegram.bot.token}")
     private String botToken;
 
-    public Optional<TelegramUser> validateAndExtractUser(String initData) {
-        Map<String, String> data = parseInitData(initData);
-
-        if (!isDataValid(data)) {
+    public Optional<TelegramUser> validateAndExtractUser(Map<String, String> initData) {
+        if (!isDataValid(initData)) {
             return Optional.empty();
         }
 
-        return Optional.of(mapToTelegramUser(data));
+        return Optional.of(mapToTelegramUser(initData));
     }
 
-    private Map<String, String> parseInitData(String initData) {
+    /*private Map<String, String> parseInitData(String initData) {
         Map<String, String> result = new HashMap<>();
         for (String pair : initData.split("&")) {
             String[] kv = pair.split("=", 2);
@@ -40,10 +36,10 @@ public class TelegramAuthService {
             }
         }
         return result;
-    }
+    }*/
 
     public boolean isDataValid(Map<String, String> data) {
-        String hash = data.get("hash");
+        String hash = (String) data.get("hash");
         String dataCheckString = data.entrySet().stream()
                 .filter(e -> !"hash".equals(e.getKey()))
                 .sorted(Map.Entry.comparingByKey())
@@ -71,11 +67,11 @@ public class TelegramAuthService {
     }
 
     public TelegramUser mapToTelegramUser(Map<String, String> data) {
-        Long id = Long.parseLong(data.get("id"));
-        String firstName = data.getOrDefault("first_name", "");
-        String lastName = data.getOrDefault("last_name", "");
-        String userName = data.getOrDefault("username", "");
-        String photoUrl = data.getOrDefault("photo_url", "");
+        Long id = Long.parseLong((String) data.get("id"));
+        String firstName = (String) data.getOrDefault("first_name", "");
+        String lastName = (String) data.getOrDefault("last_name", "");
+        String userName = (String) data.getOrDefault("username", "");
+        String photoUrl = (String) data.getOrDefault("photo_url", "");
         return new TelegramUser(id, firstName, lastName, userName, photoUrl);
     }
 }
