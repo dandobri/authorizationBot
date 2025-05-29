@@ -1,0 +1,38 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: telegram_auth_postgres
+    restart: always
+    environment:
+      POSTGRES_DB: telegram_auth
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    container_name: telegram_auth_app
+    depends_on:
+      - postgres
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/telegram_auth
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: pass
+      TELEGRAM_BOT_TOKEN: 8128766132:AAGLy_vwvvFpT0KR9EKdr5WKn1sj9YFBeWs
+    command: ["java", "-jar", "target/telegram-auth.jar"]
+
+  ngrok:
+    image: ngrok/ngrok:latest
+    command: http app:8080
+    environment:
+      NGROK_AUTHTOKEN: 2uxdjEx4aAbpcJ4AX7SKYOebwbd_4DBvHUtUGaD6GMcwNTZuH
+    ports:
+      - "4040:4040"
+
+volumes:
+  postgres_data:
