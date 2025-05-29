@@ -1,9 +1,8 @@
 package daniil.dobris.authorizationbot.controller;
 
-import daniil.dobris.authorizationbot.dto.TelegramUser;
 import daniil.dobris.authorizationbot.entity.TelegramUserEntity;
 import daniil.dobris.authorizationbot.repository.TelegramUserRepository;
-import daniil.dobris.authorizationbot.service.TelegramUserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,15 +18,23 @@ public class ProfileController {
     }
 
     @GetMapping("/profile")
-    public String profile(HttpSession session, Model model) {
-        Long userId = (Long) session.getAttribute("userId");
+    public String profile(HttpServletRequest request, Model model) {
+        Long userId = (Long) request.getAttribute("userId");
 
         if (userId == null) {
             return "unauthorized";
         }
 
         TelegramUserEntity user = repository.findById(userId).orElse(null);
+        if (user == null) {
+            return "unauthorized";
+        }
         model.addAttribute("user", user);
         return "profile";
+    }
+
+    @GetMapping("/unauthorized")
+    public String unauthorized() {
+        return "unauthorized";
     }
 }

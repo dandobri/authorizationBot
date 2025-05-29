@@ -1,20 +1,16 @@
 package daniil.dobris.authorizationbot.controller;
 
 import daniil.dobris.authorizationbot.dto.TelegramUser;
-import daniil.dobris.authorizationbot.entity.TelegramUserEntity;
 import daniil.dobris.authorizationbot.service.TelegramAuthService;
 import daniil.dobris.authorizationbot.service.TelegramUserService;
 import daniil.dobris.authorizationbot.util.JwtUtil;
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
 
@@ -22,9 +18,6 @@ import java.util.Optional;
 @RequestMapping("/auth")
 @Slf4j
 public class AuthController {
-
-    @Value("${telegram.bot.username}")
-    private String botUsername;
 
     private final TelegramAuthService authService;
     private final TelegramUserService userService;
@@ -36,34 +29,23 @@ public class AuthController {
         this.jwtUtil = jwtUtil;
     }
 
-    @PostMapping("/token")
-    public Map<String, String> login(@RequestParam String initData) {
+    @GetMapping("/telegram")
+    public void handleTelegramLogin(@RequestParam Map<String, String> initData, HttpServletResponse response) throws IOException {
         Optional<TelegramUser> userOpt = authService.validateAndExtractUser(initData);
         if (userOpt.isEmpty()) {
-            throw new RuntimeException("Invalid username or password");
+            response.sendRedirect("/unauthorized");
+            return;
         }
+
         TelegramUser user = userOpt.get();
         userService.saveOrUpdate(user);
+
         String token = jwtUtil.generateToken(user.id());
-        return Map.of("token", token);
-    }
 
-    /*@GetMapping("/login")
-    public String login(Model model) {
-        model.addAttribute("botUsername", botUsername);
-        return "login";
+        Cookie cookie = new Cookie("token", token);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(3600 * 10);
+        response.addCookie(cookie);
     }
-
-    @GetMapping("/auth/telegram")
-    public String telegramAuth(@RequestParam Map<String, String> params, HttpSession session) {
-        session.setAttribute("telegramData", params);
-        if (!authService.isDataValid(params)) {
-            session.setAttribute("authError", true);
-            return "redirect:/login";
-        }
-        log.info("Telegram auth was successful");
-        TelegramUser user = authService.mapToTelegramUser(params);
-        session.setAttribute("telegramUser", user);
-        return "redirect:/profile";
-    }*/
 }
